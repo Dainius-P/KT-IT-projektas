@@ -2,7 +2,7 @@
 	session_start();
 
 	if($_SERVER["REQUEST_METHOD"] == "POST"){
-		require_once "config.php";
+		require_once "../generic/config.php";
 
 		$sql = "INSERT INTO prekes (title, price, description) VALUES (?, ?, ?)";
 		if($stmt = mysqli_prepare($link, $sql)){
@@ -14,7 +14,7 @@
 
 		            
 	        if(mysqli_stmt_execute($stmt)){
-	            header("location: dashboard.php");
+	            header("location: ../index.php");
 	        } else{
 	            echo "Kazkas negerai.";
 	        }
@@ -28,12 +28,12 @@
 	<head>
 		<meta charset="utf-8">
 		<title>IT Projektas - Sukurti preke</title>
-		<link href="css/dashboard_style.css" rel="stylesheet" type="text/css">
-		<link href="lib/bootstrap.min.css" rel="stylesheet">
+		<link href="../css/dashboard_style.css" rel="stylesheet" type="text/css">
+		<link href="../lib/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 	</head>
 	<body class="loggedin">
-		<?php include 'generic/navbar.php';?>
+		<?php include '../generic/navbar.php';?>
 		<div class="content">
 			<h2>Sukurti preke</h2>
 			<br>

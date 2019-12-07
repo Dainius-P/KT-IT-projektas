@@ -10,7 +10,7 @@
 	$row = $result->fetch_assoc();
 
     if($row['admin'] == 0){
-        header("location: dashboard.php");
+        header("location: index.php");
         exit;
     }
 
@@ -21,10 +21,9 @@
 	 
 	    // Validate username
 	    if(empty(trim($_POST["username"]))){
-	        $username_err = "Iveskite slaptazodi";
+	        $username_err = "Iveskite vartotojo varda";
 	    } else{
 	        $sql = "SELECT id FROM vartotojai WHERE username = ?";
-	        
 	        if($stmt = mysqli_prepare($link, $sql)){
 	            mysqli_stmt_bind_param($stmt, "s", $param_username);
 	            $param_username = trim($_POST["username"]);
@@ -42,7 +41,6 @@
 	        }
 	        mysqli_stmt_close($stmt);
 	    }
-
 	    if(empty(trim($_POST["password1"]))){
 	        $password1_err = "Iveskite slaptazodi";     
 	    } elseif(strlen(trim($_POST["password1"])) < 6){
@@ -59,9 +57,7 @@
 	            $password2_err = "Slaptazodziai nesutampa";
 	        }
 	    }
-	    
 	    if(empty($username_err) && empty($password1_err) && empty($password2_err)){
-	        
 	        $sql = "INSERT INTO vartotojai (username, password, client) VALUES (?, ?, 1)";
 	         
 	        if($stmt = mysqli_prepare($link, $sql)){
@@ -71,7 +67,7 @@
 	            $param_password = password_hash($password1, PASSWORD_DEFAULT);
 	            
 	            if(mysqli_stmt_execute($stmt)){
-	                header("location: login.php");
+	                header("location: ../login.php");
 	            } else{
 	                echo "Kazkas negerai.";
 	            }
@@ -79,7 +75,9 @@
 	         
 	        // Close statement
 	        mysqli_stmt_close($stmt);
-	    }
+	   	} else {
+	   		echo "Kazkas negerai.";
+	   	}
 	    
 	    // Close connection
 	    mysqli_close($link);

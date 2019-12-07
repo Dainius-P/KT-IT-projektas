@@ -1,11 +1,33 @@
 <div class="content">
   <?php
-      $sql = "SELECT SUM(total_price) as total_price FROM saskaitos WHERE MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE())";
+      if (isset($_GET['client'])) {
+        $client = $_GET['client'];
+        $sql = "SELECT SUM(total_price) as total_price FROM saskaitos WHERE MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE()) AND user_id=$client";
+      } else {
+        $sql = "SELECT SUM(total_price) as total_price FROM saskaitos WHERE MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE())";
+      }
       $result = $link->query($sql);
       $row = $result->fetch_assoc();
 
-      echo '<h2>Saskaitu sarasas<div class="float-right">Menesio balansas <span class="badge badge-warning">'.$row['total_price'].' &euro;</span></div></h2>
+      echo '<h2>Sąskaitu sarasas<div class="float-right">Menesio balansas <span class="badge badge-warning">'.$row['total_price'].' &euro;</span></div></h2>
             <br>
+            <select style="width: 300px;" class="form-control" name="client" id="client" onchange="clientChange(this)">
+            <option value="-1" default>Pasirinkite klienta</option>"';
+
+      $sql = "SELECT * from vartotojai WHERE client=1";
+      $result = $link->query($sql);
+
+      while($row = $result->fetch_assoc()) {
+        if($client == $row['id']){
+          echo '<option value="'.$row['id'].'" selected="True">'.$row['username'].'</option>';
+        }
+        else{
+          echo '<option value="'.$row['id'].'">'.$row['username'].'</option>';
+        }
+      }
+      echo '</select>';
+
+      echo '<br>
             <table class="table">
                 <thead class="thead-dark">
                   <tr>
@@ -34,7 +56,14 @@
       $total_rows = $row['count'];
       $total_pages = ceil($total_rows / $no_of_records_per_page);
 
-      $sql = "SELECT * FROM saskaitos ORDER BY date desc LIMIT $offset, $no_of_records_per_page";
+
+      if (isset($_GET['client'])) {
+          $client = $_GET['client'];
+          $sql = "SELECT * FROM saskaitos WHERE user_id=$client ORDER BY date desc LIMIT $offset, $no_of_records_per_page";
+      } else {
+          $sql = "SELECT * FROM saskaitos ORDER BY date desc LIMIT $offset, $no_of_records_per_page";
+      }
+
       $result = $link->query($sql);
       while($row = $result->fetch_assoc()) {
 
@@ -72,3 +101,14 @@
     </ul>
   </nav>
 </div>
+
+<script type="text/javascript">
+  function clientChange(client) {
+    if(client.value == -1){
+      window.location.href = "index.php";
+    }
+    else{
+      location.href = location.origin + location.pathname + '?client=' + client.value;
+    }
+  }
+</script>
