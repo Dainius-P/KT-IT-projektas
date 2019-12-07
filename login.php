@@ -3,38 +3,67 @@
     session_start();
 
     if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-        header("location: dashboard.php");
+        header("location: index.php");
         exit;
     }
 
-    require_once "config.php";
+    require_once "generic/config.php";
 
     $username = $password = "";
     $username_err = $password_err = "";
  
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-        if ($stmt = $link->prepare('SELECT id, password FROM vartotojai WHERE username = ?')) {
-            $stmt->bind_param('s', $_POST['username']);
-            $stmt->execute();
-            $stmt->store_result();
-            if ($stmt->num_rows > 0) {
-                $stmt->bind_result($id, $password);
-                $stmt->fetch();
-                if ($_POST['password'] === $password) {
-                    session_regenerate_id();
-                    $_SESSION['loggedin'] = True;
-                    $_SESSION['username'] = $_POST['username'];
-                    $_SESSION['id'] = $id;
-                    header('Location: dashboard.php');
-                } else {
-                    $password_err = 'Netinkamas slaptazodis';
+ 
+    // Check if username is empty
+    if(empty(trim($_POST["username"]))){
+        $username_err = "Iveskite prisijungimo varda";
+    } else{
+        $username = trim($_POST["username"]);
+    }
+
+    if(empty(trim($_POST["password"]))){
+        $password_err = "Iveskite slaptazodi.";
+    } else{
+        $password = trim($_POST["password"]);
+    }
+    
+    if(empty($username_err) && empty($password_err)){
+        $sql = "SELECT id, username, password FROM vartotojai WHERE username = ?";
+        
+        if($stmt = mysqli_prepare($link, $sql)){
+            mysqli_stmt_bind_param($stmt, "s", $param_username);
+            $param_username = $username;
+            if(mysqli_stmt_execute($stmt)){
+                mysqli_stmt_store_result($stmt);
+                if(mysqli_stmt_num_rows($stmt) == 1){                    
+                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
+                    if(mysqli_stmt_fetch($stmt)){
+                        if(password_verify($password, $hashed_password)){
+                            session_start();
+                            $_SESSION["loggedin"] = true;
+                            $_SESSION["id"] = $id;
+                            $_SESSION["username"] = $username;
+                            header("location: index.php");
+                        } else{
+                            $password_err = "Netinkamas slaptazodis";
+                        }
+                    }
+                } else{
+                    // Display an error message if username doesn't exist
+                    $username_err = "Toks vartotojas neegzistuoja.";
                 }
-            } else {
-                $username_err = 'Toks vartotojas neegzistuoja';
+            } else{
+                echo "Ivyko klaida.";
             }
         }
-        $stmt->close();
+        
+        // Close statement
+        mysqli_stmt_close($stmt);
     }
+    
+    // Close connection
+    mysqli_close($link);
+}
 ?>
 
 <!DOCTYPE html>
