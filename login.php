@@ -79,8 +79,11 @@
     <link href="css/login_style.css" rel="stylesheet">
   </head>
   <body class="text-center">
+
   	<form class="form-signin" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-      <h1 class="h3 mb-3 font-weight-normal">Prisijunkite</h1>
+        <h1>PVM sąskaitų išrašymo sistema</h1>
+        <br>
+      <h2 class="h3 mb-3 font-weight-normal">Prisijunkite</h2>
       <label for="inputUsername" class="sr-only">Prisijungimo vardas</label>
       <input type="text" id="inputUsername" name="username" class="form-control" placeholder="Prisijungimo vardas" required autofocus>
       <span class="help-block"><?php echo $username_err; ?></span>
@@ -88,6 +91,6 @@
       <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Slaptazodis" required>
       <span class="help-block"><?php echo $password_err; ?></span>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Prisijungti</button>
-      <p class="mt-5 mb-3 text-muted">&copy; KTU 2019-2020</p>
+      <p class="mt-5 mb-3 text-muted">&copy; KTU 2019-2020 Dainius Preimantas IFF 7/5</p>
   </form>
 </body>
