@@ -33,6 +33,7 @@
 		                      <th scope="col">Saskaitos gavejas</th>
 		                      <th scope="col">Israsymo data</th>
 		                      <th scope="col">Suma</th>
+		                      <th scope="col">Redaguoti</th>
 		                      <th scope="col">Istrinti</th>
 		                  </tr>
 		                 </thead>
@@ -71,6 +72,7 @@
 		            <td>'.$user_row['username'].'</td>
 		            <td>'.$row['date'].'</td>
 		            <td>'.$row['total_price'].' &euro;</td>
+		            <td><a class="btn btn-primary btn-sm" href="bill_edit.php?bill_id='.$row['id'].'"role="button">Redaguoti</a></td>
 		            <td><a class="btn btn-danger btn-sm" href="bill_delete.php?bill_id='.$row['id'].'"role="button">Istrinti</a></td>
 		          </tr>';
 		      }
